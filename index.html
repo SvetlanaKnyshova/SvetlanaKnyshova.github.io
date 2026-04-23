@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Обучение по качеству-Онлайн | Обучение персонала качеству</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #dbe6f0; color: #1e2f3e; line-height: 1.5; padding: 12px; }
+        .container { max-width: 1300px; margin: 0 auto; background: white; border-radius: 36px; box-shadow: 0 20px 40px -15px rgba(0,40,70,0.3); padding: 1.8rem 1.5rem; }
+        .nav-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 2px solid #d1e2f0; padding-bottom: 0.5rem; flex-wrap: wrap; }
+        .nav-tab { padding: 0.5rem 1.5rem; font-weight: 600; font-size: 1rem; border-radius: 40px; cursor: pointer; background: #eef3fa; color: #144e75; transition: 0.1s; border: none; }
+        .nav-tab.active { background: #1b4e77; color: white; }
+        .title-block { margin-bottom: 1.5rem; }
+        .title-block h1 { font-size: 2rem; font-weight: 700; background: linear-gradient(145deg, #003153, #1b5583); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .badge-group { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.8rem; }
+        .badge { background: #e7f0fa; color: #144e75; padding: 0.3rem 1rem; border-radius: 40px; font-size: 0.8rem; border: 1px solid #b7d3ed; }
+        .info-box { background-color: #fff6e0; border-left: 8px solid #e68a2e; padding: 1rem 1.5rem; border-radius: 20px; margin-bottom: 2rem; }
+        .defect-card, .param-card { background: white; border: 1px solid #dbe6f2; border-radius: 28px; margin-bottom: 1.8rem; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: grab; transition: box-shadow 0.2s; }
+        .defect-card:active { cursor: grabbing; }
+        .defect-title, .param-header { background-color: #f0f7fe; padding: 0.8rem 1.2rem; font-size: 1.2rem; font-weight: 700; color: #0b3b58; border-bottom: 2px solid #cbddec; display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .impact-block { background-color: #fef7e0; padding: 0.8rem 1.2rem; font-size: 0.9rem; color: #7a5c1a; }
+        .defect-grid, .param-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: #f9fcff; }
+        .grade-col, .detail-block { padding: 1rem; border-right: 1px dashed #b9cee4; }
+        .grade-col:last-child, .detail-block:last-child { border-right: none; }
+        .grade-col h3, .detail-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.8rem; }
+        .grade-col.good h3 { color: #0f6d3b; }
+        .grade-col.limited h3 { color: #9e6d1b; }
+        .grade-col.scrap h3 { color: #b13e3e; }
+        .detail-title { color: #1f6e9f; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px; }
+        .grade-col ul, .detail-text { list-style: none; font-size: 0.85rem; }
+        .grade-col li, .detail-text { margin-bottom: 0.5rem; padding-left: 1rem; position: relative; }
+        .grade-col li::before { content: "•"; position: absolute; left: 0; color: #2a73b3; }
+        .life-example, .gost-badge { background-color: #ecf3fa; border-radius: 12px; padding: 0.4rem; margin-top: 0.6rem; font-size: 0.75rem; border-left: 3px solid #4b89b5; }
+        .gost-badge { display: inline-block; background: #e7f0fa; border-radius: 20px; padding: 0.2rem 0.6rem; margin-top: 0.3rem; font-weight: 600; color: #144e75; }
+        .game-section { background: linear-gradient(145deg, #f0f7fe, #e3edf7); border-radius: 36px; padding: 1.8rem 1.2rem; margin-top: 2rem; border: 2px solid white; }
+        .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .game-header h2 { font-size: 1.6rem; font-weight: 700; color: #0b3b5e; }
+        .score-badge { background: #1e3b5a; color: white; padding: 0.4rem 1.2rem; border-radius: 40px; font-weight: 600; font-size: 1.1rem; }
+        .progress-game { background: #eaf0f8; height: 10px; border-radius: 40px; margin-bottom: 1.5rem; overflow: hidden; }
+        .progress-bar-game { height: 100%; background: #1f6e9f; width: 0%; transition: width 0.3s; }
+        .game-card { background: white; border-radius: 28px; padding: 1.5rem; box-shadow: 0 8px 18px -8px rgba(0,40,70,0.15); }
+        .question-desc { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.8rem; border-left: 5px solid #2580c2; padding-left: 1rem; }
+        .hint-text { background-color: #e8f0fe; border-radius: 16px; padding: 0.6rem; margin-bottom: 1.2rem; font-size: 0.85rem; }
+        .game-options { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem; }
+        .game-option { background: #f4f9ff; border: 2px solid #c4d9ec; border-radius: 60px; padding: 0.8rem 1.2rem; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.8rem; }
+        .game-option:active { transform: scale(0.98); }
+        .game-option.disabled-opt { opacity: 0.6; pointer-events: none; }
+        .game-option.selected-correct { background: #d5f0e0; border-color: #0f6d3b; }
+        .game-option.selected-incorrect { background: #ffe2e2; border-color: #b13e3e; }
+        .feedback-game { background: #f0f7ff; border-radius: 20px; padding: 1rem; margin: 1rem 0; border-left: 6px solid #2580c2; }
+        .next-btn { background: #1a5781; color: white; border: none; border-radius: 60px; padding: 0.8rem 2rem; font-size: 1rem; font-weight: 700; cursor: pointer; margin: 0 auto; display: block; }
+        .restart-btn, .export-btn, .import-btn, .edit-btn, .template-btn, .reset-btn { background: #e2eaf3; color: #1e405e; border: none; border-radius: 40px; padding: 0.6rem 1.5rem; font-weight: 600; cursor: pointer; margin-top: 1rem; margin-right: 0.5rem; }
+        .export-btn { background: #2c7a4d; color: white; }
+        .import-btn { background: #2c6e7a; color: white; }
+        .template-btn { background: #9b59b6; color: white; }
+        .reset-btn { background: #e67e22; color: white; }
+        .edit-btn { background: #f0b27a; color: #5e2a0c; }
+        .history-list { margin-top: 1rem; background: #f8fafc; border-radius: 20px; padding: 0.8rem; font-size: 0.8rem; max-height: 300px; overflow-y: auto; }
+        .history-item { border-bottom: 1px solid #d1e2f0; padding: 0.5rem; display: flex; justify-content: space-between; }
+        .footer-note { font-size: 0.75rem; color: #6f8faa; text-align: center; margin-top: 2rem; border-top: 1px solid #d1e2f0; padding-top: 1rem; }
+        .admin-toolbar { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .login-card { background: white; border-radius: 48px; padding: 2rem; width: 350px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .login-card input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 60px; border: 1px solid #b7d3ed; font-size: 1rem; }
+        .login-card button { background: #1b4e77; color: white; border: none; border-radius: 60px; padding: 12px; width: 100%; font-weight: bold; cursor: pointer; }
+        .user-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; background: #eef3fa; padding: 0.5rem 1rem; border-radius: 60px; }
+        .logout-btn { background: #b13e3e; color: white; border: none; border-radius: 40px; padding: 0.3rem 1rem; cursor: pointer; }
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1100; }
+        .modal-content { background: white; border-radius: 28px; padding: 2rem; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        @media (max-width: 700px) {
+            .defect-grid, .param-details { grid-template-columns: 1fr; }
+            .grade-col, .detail-block { border-right: none; border-bottom: 1px dashed #b9cee4; }
+        }
+    </style>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/store2@2.14.2/dist/store2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script> -->
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/toastr.min.js"></script>
+    <script src="lib/xlsx.full.min.js"></script>
+    <script src="lib/store2.min.js"></script>
+    <script src="lib/chart.umd.min.js"></script>
+    <script src="lib/popper.min.js"></script>
+    <script src="lib/tippy-bundle.umd.js"></script>
+    <script src="lib/Sortable.min.js"></script>
+    <script>
+        toastr.options = { "closeButton": true, "progressBar": true, "positionClass": "toast-top-right", "timeOut": "4000" };
+    </script>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+    // ---------- ИНИЦИАЛИЗАЦИЯ БАЗЫ ДАННЫХ (localStorage) ----------
+    function initDB() {
+        let users = store.get('users');
+        let defects = store.get('defects');
+        let params = store.get('control_params');
+        let questions = store.get('questions');
+        let initialized = store.get('db_initialized');
+        
+        if (!initialized || !users || !users.length || !defects || !defects.length) {
+            const defaultUsers = [
+                { id: 1, name: "admin", password: btoa("0000"), role: "admin", department: "Руководство", created_at: new Date().toISOString() },
+                { id: 2, name: "expert", password: btoa("0000"), role: "expert", department: "СК", created_at: new Date().toISOString() },
+                { id: 3, name: "Иванов Иван", password: btoa("1234"), role: "employee", department: "БДМ", created_at: new Date().toISOString() }
+            ];
+            const defaultDefects = [
+                { id: 1, title: "1.2 Дырчатость", impact: "Дыры снижают прочность, ухудшают внешний вид, при переработке ведут к обрывам.", good: ["Дыры до 3 мм, не более 1 шт/м²"], limited: ["Полуразмытые дыры, не более 1 шт на длину сетки"], scrap: ["Дыры более 3 мм в любом количестве"], lifeLimited: "🧻 Редкие мелкие дырочки", lifeScrap: "🧻 Крупная дыра" },
+                { id: 2, title: "1.3 Выщипывания", impact: "Ворсистость ухудшает товарный вид, забивает оборудование.", good: ["Выщипывания отсутствуют"], limited: ["Полоса ≤20 мм, не более 1 полосы"], scrap: ["Полоса >20 мм, две и более"], lifeLimited: "🧻 Едва заметная ворсистая полоска", lifeScrap: "🧻 Салфетка оставляет ворс" },
+                { id: 3, title: "1.4 Надрывы по кромкам", impact: "Надрывы ведут к обрывам на ПРС.", good: ["Надрывы ≤5 мм"], limited: ["Надрывы 5–15 мм"], scrap: ["Надрывы >15 мм"], lifeLimited: "🧻 Надрыв около 1 см", lifeScrap: "🧻 Полный разрыв" },
+                { id: 4, title: "1.5 Сорность", impact: "Щепки и включения повреждают оборудование.", good: ["Сорность отсутствует"], limited: ["Сорность превышает норму"], scrap: ["Значительная сорность, щепки"], lifeLimited: "🧻 Тёмные вкрапления", lifeScrap: "🧻 Платок с жёсткими частицами" }
+            ];
+            const defaultParams = [
+                { id: 1, name: "Граммаж", impactQual: "Определяет прочность, впитываемость.", impactProc: "Влияет на настройки оборудования.", period: "Каждый рулон", result: "Соответствие спецификации", gost: "ГОСТ Р ИСО 536-2013" },
+                { id: 2, name: "Влажность", impactQual: "Влияет на прочность, запах.", impactProc: "Влияет на намотку, резку.", period: "Каждый рулон", result: "4-8%", gost: "ГОСТ ISO 287" },
+                { id: 3, name: "Сорность", impactQual: "Посторонние включения → брак.", impactProc: "Засоряет оборудование.", period: "2 раза в смену", result: "≤0,2%", gost: "" }
+            ];
+            const defaultQuestions = [
+                { id: 1, type: "defect", description: "Какой дефект при дыре более 3 мм в любом количестве приводит к утилизации?", hint: "Нарушение целостности полотна.", options: ["Надрывы","Дырчатость","Выщипывания","Сорность"], correct: 1, explanation: "Дыры более 3 мм — утилизация." },
+                { id: 2, type: "defect", description: "При выщипываниях полосой более 20 мм или двух и более полосах категория —", hint: "Лохматость, ворс.", options: ["Годная","Ограниченная партия","Утилизация","Зависит от граммажа"], correct: 2, explanation: "Две и более полосы выщипываний — утилизация." },
+                { id: 3, type: "defect", description: "Надрывы по кромке длиной 12 мм относятся к категории:", hint: "Граница между допустимым и браком.", options: ["Годная","Ограниченная партия","Утилизация","Не нормируется"], correct: 1, explanation: "Надрывы 5–15 мм — ограниченная партия." },
+                { id: 4, type: "defect", description: "Щепки в бумажном полотне — это:", hint: "Крупные включения.", options: ["Годная","Ограниченная партия","Утилизация","Требует доработки"], correct: 2, explanation: "Щепки — утилизация." },
+                { id: 5, type: "control", description: "Какой параметр при неравномерности вызывает проблемы с намоткой?", hint: "Измеряется он-лайн сканером.", options: ["Профиль толщины","Профиль граммажа","Влажность","Сорность"], correct: 1, explanation: "Неравномерный профиль граммажа → дефекты намотки." },
+                { id: 6, type: "control", description: "Какая проблема возникает при высокой влажности бумаги-основы?", hint: "Влажность 4-8%.", options: ["Хрупкость","Плесень","Сорность","Снижение прочности"], correct: 1, explanation: "Высокая влажность → риск плесени." },
+                { id: 7, type: "control", description: "Какой параметр является основной причиной рекламаций?", hint: "Посторонние включения.", options: ["Оттенок","Сорность","Прочность","Влажность"], correct: 1, explanation: "Сорность — частая претензия." }
+            ];
+            store.set('users', defaultUsers);
+            store.set('defects', defaultDefects);
+            store.set('control_params', defaultParams);
+            store.set('questions', defaultQuestions);
+            store.set('attempts', []);
+            store.set('answers', []);
+            store.set('db_initialized', true);
+            console.log("База данных инициализирована (или пересоздана)");
+        } else {
+            let updated = false;
+            if (!users.find(u => u.name === "admin")) {
+                users.push({ id: Date.now() + 1, name: "admin", password: btoa("0000"), role: "admin", department: "Руководство", created_at: new Date().toISOString() });
+                updated = true;
+            }
+            if (!users.find(u => u.name === "expert")) {
+                users.push({ id: Date.now() + 2, name: "expert", password: btoa("0000"), role: "expert", department: "СК", created_at: new Date().toISOString() });
+                updated = true;
+            }
+            if (updated) {
+                store.set('users', users);
+                console.log("Добавлены недостающие admin/expert");
+            }
+        }
+    }
+    initDB();
+
+    let currentUser = null;
+    let currentTab = 'defects';
+    let sortableInstance = null;
+    let resultsChart = null;
+
+    function getUsers() { return store.get('users') || []; }
+    function saveUsers(users) { store.set('users', users); }
+    function getDefects() { 
+        let defects = store.get('defects') || [];
+        const order = store.get('defectsOrder');
+        if (order && Array.isArray(order)) {
+            const ordered = [];
+            for (let id of order) {
+                const found = defects.find(d => d.id == id);
+                if (found) ordered.push(found);
+            }
+            const remaining = defects.filter(d => !order.includes(d.id));
+            return ordered.concat(remaining);
+        }
+        return defects;
+    }
+    function saveDefects(defects) { store.set('defects', defects); }
+    function getParams() { 
+        let params = store.get('control_params') || [];
+        const order = store.get('paramsOrder');
+        if (order && Array.isArray(order)) {
+            const ordered = [];
+            for (let id of order) {
+                const found = params.find(p => p.id == id);
+                if (found) ordered.push(found);
+            }
+            const remaining = params.filter(p => !order.includes(p.id));
+            return ordered.concat(remaining);
+        }
+        return params;
+    }
+    function saveParams(params) { store.set('control_params', params); }
+    function getQuestions() { 
+        let questions = store.get('questions') || [];
+        const order = store.get('questionsOrder');
+        if (order && Array.isArray(order)) {
+            const ordered = [];
+            for (let id of order) {
+                const found = questions.find(q => q.id == id);
+                if (found) ordered.push(found);
+            }
+            const remaining = questions.filter(q => !order.includes(q.id));
+            return ordered.concat(remaining);
+        }
+        return questions;
+    }
+    function saveQuestions(q) { store.set('questions', q); }
+    function getAttempts() { return store.get('attempts') || []; }
+    function saveAttempts(a) { store.set('attempts', a); }
+    function getAnswers() { return store.get('answers') || []; }
+    function saveAnswers(a) { store.set('answers', a); }
+
+    function resetDatabase() {
+        store.remove('users');
+        store.remove('defects');
+        store.remove('control_params');
+        store.remove('questions');
+        store.remove('attempts');
+        store.remove('answers');
+        store.remove('db_initialized');
+        store.remove('defectsOrder');
+        store.remove('paramsOrder');
+        store.remove('questionsOrder');
+        initDB();
+        if (currentUser) {
+            const refreshed = getUsers().find(u => u.id === currentUser.id);
+            if (refreshed) currentUser = refreshed;
+            else logout();
+        }
+        toastr.success("База данных сброшена к настройкам по умолчанию");
+        renderApp();
+    }
+
+    function exportFullDatabase() {
+        const users = getUsers();
+        const defects = getDefects();
+        const params = getParams();
+        const questions = getQuestions();
+        const wb = XLSX.utils.book_new();
+        const usersSheet = users.map(u => ({ ID: u.id, ФИО: u.name, Табельный_номер: atob(u.password), Роль: u.role, Подразделение: u.department, Дата_создания: u.created_at }));
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(usersSheet), "Пользователи");
+        const defectsSheet = defects.map(d => ({ ID: d.id, Название: d.title, Влияние: d.impact, Годная: d.good.join('; '), Ограниченная: d.limited.join('; '), Утилизация: d.scrap.join('; '), Пример_Ограниченной: d.lifeLimited, Пример_Утилизации: d.lifeScrap }));
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(defectsSheet), "Дефекты");
+        const paramsSheet = params.map(p => ({ ID: p.id, Параметр: p.name, Влияние_на_качество: p.impactQual, Влияние_на_переработку: p.impactProc, Периодичность: p.period, Результат: p.result, ГОСТ: p.gost }));
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(paramsSheet), "Параметры");
+        const questionsSheet = questions.map(q => ({ ID: q.id, Тип: q.type, Вопрос: q.description, Подсказка: q.hint, Варианты: q.options.join('|'), Правильный_индекс: q.correct, Пояснение: q.explanation }));
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(questionsSheet), "Вопросы");
+        XLSX.writeFile(wb, `БД_УК-Онлайн_${new Date().toISOString().slice(0,19)}.xlsx`);
+        toastr.success("База данных экспортирована в Excel");
+    }
+
+    function downloadTemplate() {
+        const emptyUsers = [{ ID: 1, ФИО: "Иванов Иван", Табельный_номер: "1234", Роль: "employee", Подразделение: "БДМ", Дата_создания: new Date().toISOString() }];
+        const emptyDefects = [{ ID: 1, Название: "Пример дефекта", Влияние: "Описание влияния", Годная: "Критерий 1; Критерий 2", Ограниченная: "Критерий 1", Утилизация: "Критерий 1", Пример_Ограниченной: "Жизненный пример", Пример_Утилизации: "Жизненный пример" }];
+        const emptyParams = [{ ID: 1, Параметр: "Граммаж", Влияние_на_качество: "текст", Влияние_на_переработку: "текст", Периодичность: "Каждый рулон", Результат: "50-60 г/м²", ГОСТ: "ГОСТ ..." }];
+        const emptyQuestions = [{ ID: 1, Тип: "defect", Вопрос: "Текст вопроса", Подсказка: "подсказка", Варианты: "Вариант1|Вариант2|Вариант3|Вариант4", Правильный_индекс: 0, Пояснение: "Пояснение" }];
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(emptyUsers), "Пользователи");
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(emptyDefects), "Дефекты");
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(emptyParams), "Параметры");
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(emptyQuestions), "Вопросы");
+        XLSX.writeFile(wb, `Шаблон_БД_УК-Онлайн.xlsx`);
+        toastr.info("Скачан шаблон. Заполните его, не меняя заголовки колонок, и импортируйте.");
+    }
+
+    function importFullDatabase(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            let workbook;
+            try {
+                workbook = XLSX.read(data, { type: 'array' });
+            } catch(err) {
+                toastr.error("Не удалось прочитать файл. Убедитесь, что это Excel-файл (.xlsx)");
+                console.error(err);
+                return;
+            }
+            function normalizeKey(str) {
+                return String(str).trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-zа-яё0-9_]/g, '');
+            }
+            function getNormalizedData(sheetName, expectedKeys) {
+                const sheet = workbook.Sheets[sheetName];
+                if (!sheet) return { data: null, missing: [sheetName] };
+                const raw = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+                if (!raw || raw.length === 0) return { data: null, missing: [] };
+                let headerRowIndex = -1;
+                for (let i = 0; i < Math.min(raw.length, 20); i++) {
+                    const row = raw[i];
+                    if (row && row.some(cell => cell && cell.toString().trim().length > 0)) {
+                        headerRowIndex = i;
+                        break;
+                    }
+                }
+                if (headerRowIndex === -1) return { data: null, missing: [] };
+                const headersRaw = raw[headerRowIndex];
+                const normalizedHeaders = headersRaw.map(h => normalizeKey(h || ""));
+                const mapping = {};
+                const missing = [];
+                for (let exp of expectedKeys) {
+                    const expNorm = normalizeKey(exp);
+                    const idx = normalizedHeaders.findIndex(h => h === expNorm);
+                    if (idx !== -1) mapping[exp] = idx;
+                    else missing.push(exp);
+                }
+                if (missing.length > 0) return { data: null, missing, foundHeaders: normalizedHeaders };
+                const dataRows = raw.slice(headerRowIndex + 1).filter(row => row.some(cell => cell && cell.toString().trim() !== ""));
+                const result = dataRows.map(row => {
+                    const obj = {};
+                    for (let [key, idx] of Object.entries(mapping)) obj[key] = row[idx] !== undefined ? row[idx] : "";
+                    return obj;
+                });
+                return { data: result, missing: null };
+            }
+            const expectedSheets = {
+                "Пользователи": ["ID", "ФИО", "Табельный_номер", "Роль", "Подразделение", "Дата_создания"],
+                "Дефекты": ["ID", "Название", "Влияние", "Годная", "Ограниченная", "Утилизация", "Пример_Ограниченной", "Пример_Утилизации"],
+                "Параметры": ["ID", "Параметр", "Влияние_на_качество", "Влияние_на_переработку", "Периодичность", "Результат", "ГОСТ"],
+                "Вопросы": ["ID", "Тип", "Вопрос", "Подсказка", "Варианты", "Правильный_индекс", "Пояснение"]
+            };
+            let hasError = false;
+            let importedAny = false;
+            for (let [sheetName, expectedKeys] of Object.entries(expectedSheets)) {
+                const { data, missing, foundHeaders } = getNormalizedData(sheetName, expectedKeys);
+                if (!data) {
+                    if (missing && missing.length) {
+                        let msg = `Лист "${sheetName}": отсутствуют колонки: ${missing.join(", ")}. `;
+                        if (foundHeaders) msg += `Найдены: ${foundHeaders.join(", ")}. `;
+                        msg += "Используйте кнопку 'Скачать шаблон' и заполните его, не меняя заголовки.";
+                        toastr.error(msg);
+                        console.error(msg);
+                        hasError = true;
+                    } else {
+                        toastr.warning(`Лист "${sheetName}" пуст или не найден`);
+                    }
+                    continue;
+                }
+                importedAny = true;
+                try {
+                    if (sheetName === "Пользователи") {
+                        const newUsers = data.map(row => ({
+                            id: Number(row["ID"]) || Date.now(),
+                            name: row["ФИО"] || "",
+                            password: btoa(row["Табельный_номер"]?.toString() || ""),
+                            role: row["Роль"] === "admin" || row["Роль"] === "expert" ? row["Роль"] : "employee",
+                            department: row["Подразделение"] || "",
+                            created_at: row["Дата_создания"] || new Date().toISOString()
+                        }));
+                        saveUsers(newUsers);
+                        toastr.success(`Пользователи: импортировано ${newUsers.length}`);
+                    } else if (sheetName === "Дефекты") {
+                        const newDefects = data.map(row => ({
+                            id: Number(row["ID"]) || Date.now(),
+                            title: row["Название"] || "",
+                            impact: row["Влияние"] || "",
+                            good: row["Годная"] ? row["Годная"].split(';').map(s=>s.trim()) : [],
+                            limited: row["Ограниченная"] ? row["Ограниченная"].split(';').map(s=>s.trim()) : [],
+                            scrap: row["Утилизация"] ? row["Утилизация"].split(';').map(s=>s.trim()) : [],
+                            lifeLimited: row["Пример_Ограниченной"] || "",
+                            lifeScrap: row["Пример_Утилизации"] || ""
+                        }));
+                        saveDefects(newDefects);
+                        toastr.success(`Дефекты: импортировано ${newDefects.length}`);
+                    } else if (sheetName === "Параметры") {
+                        const newParams = data.map(row => ({
+                            id: Number(row["ID"]) || Date.now(),
+                            name: row["Параметр"] || "",
+                            impactQual: row["Влияние_на_качество"] || "",
+                            impactProc: row["Влияние_на_переработку"] || "",
+                            period: row["Периодичность"] || "",
+                            result: row["Результат"] || "",
+                            gost: row["ГОСТ"] || ""
+                        }));
+                        saveParams(newParams);
+                        toastr.success(`Параметры: импортировано ${newParams.length}`);
+                    } else if (sheetName === "Вопросы") {
+                        const newQuestions = data.map(row => ({
+                            id: Number(row["ID"]) || Date.now(),
+                            type: row["Тип"] === "control" ? "control" : "defect",
+                            description: row["Вопрос"] || "",
+                            hint: row["Подсказка"] || "",
+                            options: row["Варианты"] ? row["Варианты"].split('|') : [],
+                            correct: parseInt(row["Правильный_индекс"]) || 0,
+                            explanation: row["Пояснение"] || ""
+                        }));
+                        saveQuestions(newQuestions);
+                        toastr.success(`Вопросы: импортировано ${newQuestions.length}`);
+                    }
+                } catch(e) {
+                    toastr.error(`Ошибка при обработке листа "${sheetName}": ${e.message}`);
+                    console.error(e);
+                    hasError = true;
+                }
+            }
+            if (!hasError && importedAny) {
+                toastr.success("Импорт завершён успешно!");
+                if (currentUser) {
+                    const updatedUser = getUsers().find(u => u.id === currentUser.id);
+                    if (!updatedUser) {
+                        toastr.info("Ваша учётная запись удалена. Выполнен выход.");
+                        logout();
+                    } else {
+                        currentUser = updatedUser;
+                        renderApp();
+                    }
+                } else {
+                    renderApp();
+                }
+            } else if (!importedAny) {
+                toastr.error("Не удалось импортировать ни одного листа. Проверьте, что файл содержит листы с правильными названиями.");
+            }
+        };
+        reader.onerror = () => toastr.error("Не удалось прочитать файл");
+        reader.readAsArrayBuffer(file);
+    }
+
+    function openUserManager() {
+        let modal = document.createElement('div'); modal.className = 'modal'; modal.style.display = 'flex';
+        modal.innerHTML = `<div class="modal-content"><h3>👥 Управление сотрудниками</h3><div id="userManagerList"></div><button id="addUserBtn">+ Добавить сотрудника</button><button id="closeUserModal">Закрыть</button></div>`;
+        document.body.appendChild(modal);
+        function renderUserList() {
+            let list = getUsers();
+            let html = '<table border="1" cellpadding="5" style="width:100%; border-collapse:collapse;"><tr><th>ID</th><th>ФИО</th><th>Табельный номер</th><th>Подразделение</th><th>Роль</th><th>Действия</th></tr>';
+            list.forEach((u, idx) => {
+                const isSpecial = u.role === 'admin' || u.role === 'expert';
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td><input id="uname_${idx}" value="${u.name}" ${isSpecial ? 'readonly' : ''}></td>
+                    <td><input id="upass_${idx}" value="${atob(u.password)}" ${isSpecial ? 'readonly' : ''}></td>
+                    <td><input id="udept_${idx}" value="${u.department}" ${isSpecial ? 'readonly' : ''}></td>
+                    <td>${u.role === 'employee' ? 'Сотрудник' : (u.role === 'expert' ? 'Эксперт' : 'Руководитель')}</td>
+                    <td>${!isSpecial ? `<button class="delUserBtn" data-idx="${idx}">Удалить</button>` : ''}</td>
+                </tr>`;
+            });
+            html += '<tr><div style="margin-top:10px;"><button id="saveUsersBtn">Сохранить изменения</button></div>';
+            document.getElementById('userManagerList').innerHTML = html;
+            document.querySelectorAll('.delUserBtn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    let idx = parseInt(btn.dataset.idx);
+                    let newList = getUsers().filter((_,i) => i !== idx);
+                    saveUsers(newList);
+                    renderUserList();
+                });
+            });
+            document.getElementById('saveUsersBtn').onclick = () => {
+                let newList = [];
+                for (let i=0; i<getUsers().length; i++) {
+                    let old = getUsers()[i];
+                    if (old.role === 'admin' || old.role === 'expert') {
+                        newList.push(old);
+                        continue;
+                    }
+                    newList.push({
+                        id: old.id,
+                        name: document.getElementById(`uname_${i}`)?.value || old.name,
+                        password: btoa(document.getElementById(`upass_${i}`)?.value || ''),
+                        role: old.role,
+                        department: document.getElementById(`udept_${i}`)?.value || old.department,
+                        created_at: old.created_at
+                    });
+                }
+                saveUsers(newList);
+                toastr.success("Пользователи сохранены");
+                renderUserList();
+                if (currentUser && currentUser.role === 'employee') {
+                    const updated = getUsers().find(u => u.id === currentUser.id);
+                    if (updated) currentUser = updated;
+                    else logout();
+                }
+            };
+        }
+        renderUserList();
+        document.getElementById('addUserBtn').onclick = () => {
+            let newList = getUsers();
+            const newId = Math.max(...newList.map(u=>u.id),0)+1;
+            newList.push({ id: newId, name: "Новый сотрудник", password: btoa("0000"), role: "employee", department: "БДМ", created_at: new Date().toISOString() });
+            saveUsers(newList);
+            renderUserList();
+        };
+        document.getElementById('closeUserModal').onclick = () => modal.remove();
+    }
+
+    function login(username, password) {
+        let users = getUsers();
+        let user = users.find(u => u.name === username);
+        if (!user && username !== "admin" && username !== "expert") {
+            const newId = Math.max(...users.map(u=>u.id),0)+1;
+            user = { id: newId, name: username, password: btoa(password), role: "employee", department: "Не указано", created_at: new Date().toISOString() };
+            users.push(user);
+            saveUsers(users);
+            toastr.success("Учётная запись создана автоматически", "Добро пожаловать");
+        } else if (user && atob(user.password) !== password) {
+            toastr.error("Неверный пароль");
+            return false;
+        } else if (!user) {
+            toastr.error("Пользователь не найден");
+            return false;
+        }
+        currentUser = { ...user, role: user.role };
+        toastr.success(`Вход выполнен, роль: ${user.role === 'employee' ? 'Сотрудник' : (user.role === 'expert' ? 'Ведущий инженер' : 'Руководитель')}`);
+        renderApp();
+        return true;
+    }
+    function logout() { currentUser = null; renderApp(); }
+
+    function getQuestionsByType(type) { return getQuestions().filter(q => q.type === type); }
+    function saveAttempt(userId, type, score, total, answersDetails) {
+        const attempts = getAttempts();
+        const newId = attempts.length ? Math.max(...attempts.map(a=>a.id)) + 1 : 1;
+        const attempt = { id: newId, user_id: userId, type: type, score: score, total: total, created_at: new Date().toISOString() };
+        attempts.push(attempt);
+        saveAttempts(attempts);
+        const allAnswers = getAnswers();
+        answersDetails.forEach(detail => {
+            allAnswers.push({ id: allAnswers.length+1, attempt_id: newId, question_id: detail.qid, selected_option: detail.selected, is_correct: detail.isCorrect });
+        });
+        saveAnswers(allAnswers);
+        toastr.success(`Результат сохранён: ${score}/${total}`);
+    }
+    function getUserAttempts(userId) { return getAttempts().filter(a => a.user_id === userId); }
+    function getAllAttemptsWithUsers() {
+        const users = getUsers();
+        const attempts = getAttempts();
+        return attempts.map(a => ({ ...a, user_name: users.find(u=>u.id === a.user_id)?.name || 'Unknown' }));
+    }
+
+    function renderApp() {
+        if (!currentUser) {
+            document.getElementById('app').innerHTML = LoginForm();
+            document.getElementById('doLoginBtn')?.addEventListener('click', () => {
+                const name = document.getElementById('loginName').value.trim();
+                const pwd = document.getElementById('loginPass').value.trim();
+                if (name && pwd) login(name, pwd);
+                else toastr.warning("Введите логин и пароль");
+            });
+            return;
+        }
+        const isExpert = currentUser.role === 'expert';
+        const isAdmin = currentUser.role === 'admin';
+        let html = `<div class="container">
+            <div class="user-info"><span>👤 ${currentUser.name} (${currentUser.role === 'employee' ? 'Сотрудник' : (currentUser.role === 'expert' ? 'Ведущий инженер' : 'Руководитель')})</span><button class="logout-btn" id="logoutBtn">Выйти</button></div>
+            <div class="nav-tabs">
+                <button class="nav-tab ${currentTab === 'defects' ? 'active' : ''}" data-tab="defects">📋 Дефекты + тренажёр</button>
+                <button class="nav-tab ${currentTab === 'control' ? 'active' : ''}" data-tab="control">📊 План контроля + тренажёр</button>
+                ${isAdmin ? `<button class="nav-tab ${currentTab === 'stats' ? 'active' : ''}" data-tab="stats">📈 Аналитика руководителя</button>` : ''}
+            </div>
+            <div id="tabContent"></div>
+            <div class="footer-note">📌 УК-Онлайн. Ваши результаты сохраняются.</div>
+        </div>`;
+        document.getElementById('app').innerHTML = html;
+        document.querySelectorAll('.nav-tab').forEach(btn => {
+            btn.addEventListener('click', () => { currentTab = btn.dataset.tab; renderApp(); });
+        });
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        if (currentTab === 'defects') renderDefectsTab();
+        else if (currentTab === 'control') renderControlTab();
+        else if (currentTab === 'stats' && isAdmin) renderStatsTab();
+    }
+
+    // ---------- РЕНДЕР ВКЛАДКИ ДЕФЕКТОВ (С ГРАФИКОМ И DRAG&DROP) ----------
+    function renderDefectsTab() {
+        const isExpert = currentUser.role === 'expert';
+        const isAdmin = currentUser.role === 'admin';
+        const contentDiv = document.getElementById('tabContent');
+        let html = `<div class="title-block"><h1>📋 Карта визуальных дефектов</h1><div class="badge-group"><span class="badge">БДМ / ПРС / упаковка</span></div></div>
+            <div class="info-box"><p><strong>📌 Категории качества</strong><br>✅ Годная ⚠️ Ограниченная партия ❌ Утилизация</p></div>`;
+        if (isExpert || isAdmin) {
+            html += `<div class="admin-toolbar">
+                <button class="export-btn" id="exportDbBtn">💾 Экспорт БД (Excel)</button>
+                <button class="import-btn" id="importDbBtn">📂 Импорт БД (Excel)</button>
+                <button class="template-btn" id="templateDbBtn">📥 Скачать шаблон БД</button>
+                <button class="reset-btn" id="resetDbBtn">🔄 Сбросить БД</button>
+                <button class="edit-btn" id="manageUsersBtn">👥 Управление сотрудниками</button>
+                <button class="edit-btn" id="editDefectsBtn">✏️ Управление дефектами</button>
+                <button class="edit-btn" id="editQuestionsDefectBtn">📝 Управление вопросами (дефекты)</button>
+            </div>`;
+        }
+        html += `<div id="defectsList"></div>
+            <div class="game-section" id="gameSectionDefects"></div>
+            <div id="historyPanelDef" class="history-list"></div>`;
+        contentDiv.innerHTML = html;
+        const defects = getDefects();
+        let defectsHtml = '';
+        defects.forEach(d => {
+            defectsHtml += `<div class="defect-card" data-id="${d.id}"><div class="defect-title">${d.title}</div><div class="impact-block"><strong>📌 Влияние:</strong> ${d.impact}</div><div class="defect-grid"><div class="grade-col good"><h3>✅ Годная</h3><ul>${d.good.map(t=>`<li>${t}</li>`).join('')}</ul></div><div class="grade-col limited"><h3>⚠️ Ограниченная партия</h3><ul>${d.limited.map(t=>`<li>${t}</li>`).join('')}</ul><div class="life-example">${d.lifeLimited}</div></div><div class="grade-col scrap"><h3>❌ Утилизация</h3><ul>${d.scrap.map(t=>`<li>${t}</li>`).join('')}</ul><div class="life-example">${d.lifeScrap}</div></div></div></div>`;
+        });
+        document.getElementById('defectsList').innerHTML = defectsHtml;
+        const qDefects = getQuestionsByType('defect');
+        let gameState = { current: 0, score: 0, answered: false, selected: null, finished: false };
+        let historyChartDef = null;
+        let sortableDefects = null;
+
+        function renderGame() {
+            const container = document.getElementById('gameSectionDefects');
+            if (!container) return;
+            if (gameState.finished) {
+                container.innerHTML = `<div style="text-align:center;"><h3>🎉 Итог</h3><div style="font-size:2rem;">${gameState.score}/${qDefects.length}</div><button class="restart-btn" id="restartGameDef">🔄 Заново</button></div>`;
+                document.getElementById('restartGameDef')?.addEventListener('click', () => { gameState = { current:0, score:0, answered:false, selected:null, finished:false }; renderGame(); });
+                return;
+            }
+            const q = qDefects[gameState.current];
+            if (!q) return;
+            const progress = ((gameState.current+1)/qDefects.length)*100;
+            let optsHtml = '';
+            q.options.forEach((opt, idx) => {
+                let cls = 'game-option';
+                if (gameState.answered) { cls += ' disabled-opt'; if (idx === q.correct) cls += ' selected-correct'; else if (idx === gameState.selected && idx !== q.correct) cls += ' selected-incorrect'; }
+                optsHtml += `<div class="${cls}" data-opt="${idx}"><span>${String.fromCharCode(65+idx)}.</span> <span>${opt}</span></div>`;
+            });
+            let feedback = '';
+            if (gameState.answered) feedback = `<div class="feedback-game"><strong>${gameState.selected === q.correct ? '✅ Верно!' : '❌ Неверно.'}</strong><p>${q.explanation}</p><p>✔ Правильный ответ: ${q.options[q.correct]}</p></div>`;
+            const htmlGame = `<div class="game-header"><h2>🧠 Тренажёр по дефектам</h2><div class="score-badge">${gameState.score}/${qDefects.length}</div></div><div class="progress-game"><div class="progress-bar-game" style="width:${progress}%;"></div></div><div class="game-card"><div class="question-desc">${q.description}</div><div class="hint-text">💡 ${q.hint}</div><div class="game-options" id="defOpts">${optsHtml}</div>${feedback}<button class="next-btn" id="nextDefBtn" ${!gameState.answered ? 'disabled' : ''}>➡️ Далее</button></div>`;
+            container.innerHTML = htmlGame;
+            document.querySelectorAll('#defOpts .game-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (gameState.answered) return;
+                    const idx = parseInt(btn.dataset.opt);
+                    gameState.selected = idx;
+                    gameState.answered = true;
+                    if (idx === q.correct) gameState.score++;
+                    renderGame();
+                });
+            });
+            document.getElementById('nextDefBtn')?.addEventListener('click', () => {
+                if (gameState.current < qDefects.length-1) { gameState.current++; gameState.answered=false; gameState.selected=null; renderGame(); }
+                else {
+                    gameState.finished = true;
+                    saveAttempt(currentUser.id, 'defect', gameState.score, qDefects.length, []);
+                    renderGame();
+                    renderHistoryDef();
+                }
+            });
+        }
+
+        function renderHistoryDef() {
+            const attempts = getUserAttempts(currentUser.id).filter(a=>a.type==='defect');
+            let histHtml = '<div style="font-weight:600;">📜 Ваши попытки (дефекты):</div>';
+            if (!attempts.length) {
+                histHtml += '<div>Нет попыток</div>';
+            } else {
+                attempts.forEach(a => {
+                    histHtml += `<div class="history-item">${new Date(a.created_at).toLocaleString()} — ${a.score}/${a.total} (${Math.round(a.score/a.total*100)}%)</div>`;
+                });
+            }
+            document.getElementById('historyPanelDef').innerHTML = histHtml;
+
+            const last5 = attempts.slice(0,5).reverse();
+            if (last5.length > 0) {
+                let canvas = document.getElementById('defChartCanvas');
+                if (!canvas) {
+                    canvas = document.createElement('canvas');
+                    canvas.id = 'defChartCanvas';
+                    canvas.width = 400;
+                    canvas.height = 200;
+                    document.getElementById('historyPanelDef').appendChild(canvas);
+                }
+                const labels = last5.map(a => new Date(a.created_at).toLocaleDateString());
+                const percents = last5.map(a => Math.round(a.score/a.total*100));
+                if (historyChartDef) historyChartDef.destroy();
+                const ctx = canvas.getContext('2d');
+                historyChartDef = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '% правильных ответов',
+                            data: percents,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Процент' } } },
+                        plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.raw}%` } } }
+                    }
+                });
+            } else {
+                const oldCanvas = document.getElementById('defChartCanvas');
+                if (oldCanvas) oldCanvas.remove();
+                if (historyChartDef) { historyChartDef.destroy(); historyChartDef = null; }
+            }
+        }
+
+        function enableDragAndDropDefects() {
+            const container = document.getElementById('defectsList');
+            if (!container) return;
+            if (sortableDefects) sortableDefects.destroy();
+            sortableDefects = new Sortable(container, {
+                animation: 150,
+                handle: '.defect-card',
+                onEnd: function() {
+                    const newOrder = [];
+                    document.querySelectorAll('#defectsList .defect-card').forEach(card => {
+                        const id = parseInt(card.getAttribute('data-id'));
+                        if (id) newOrder.push(id);
+                    });
+                    if (newOrder.length) {
+                        store.set('defectsOrder', newOrder);
+                        // обновляем глобальный массив defects (не обязательно, но для порядка)
+                        const allDefects = getDefects();
+                        const reordered = [];
+                        newOrder.forEach(id => {
+                            const found = allDefects.find(d => d.id === id);
+                            if (found) reordered.push(found);
+                        });
+                        // сохраняем в store без изменения порядка (только порядок в отдельном ключе)
+                        toastr.success('Порядок карточек дефектов сохранён');
+                    }
+                }
+            });
+        }
+
+        renderGame();
+        renderHistoryDef();
+        if (isExpert || isAdmin) {
+            enableDragAndDropDefects();
+            document.getElementById('exportDbBtn')?.addEventListener('click', exportFullDatabase);
+            document.getElementById('importDbBtn')?.addEventListener('click', () => {
+                const input = document.createElement('input'); input.type = 'file'; input.accept = '.xlsx, .xls';
+                input.onchange = e => { if (e.target.files[0]) importFullDatabase(e.target.files[0]); };
+                input.click();
+            });
+            document.getElementById('templateDbBtn')?.addEventListener('click', downloadTemplate);
+            document.getElementById('resetDbBtn')?.addEventListener('click', resetDatabase);
+            document.getElementById('manageUsersBtn')?.addEventListener('click', openUserManager);
+            document.getElementById('editDefectsBtn')?.addEventListener('click', () => openDefectsEditor());
+            document.getElementById('editQuestionsDefectBtn')?.addEventListener('click', () => openQuestionsEditor('defect'));
+        }
+    }
+
+    // ---------- РЕНДЕР ВКЛАДКИ КОНТРОЛЯ (С ГРАФИКОМ И DRAG&DROP) ----------
+    function renderControlTab() {
+        const isExpert = currentUser.role === 'expert';
+        const isAdmin = currentUser.role === 'admin';
+        const contentDiv = document.getElementById('tabContent');
+        let html = `<div class="title-block"><h1>📊 План контроля качества</h1></div>`;
+        if (isExpert || isAdmin) {
+            html += `<div class="admin-toolbar">
+                <button class="export-btn" id="exportDbBtnCtrl">💾 Экспорт БД (Excel)</button>
+                <button class="import-btn" id="importDbBtnCtrl">📂 Импорт БД (Excel)</button>
+                <button class="template-btn" id="templateDbBtnCtrl">📥 Скачать шаблон БД</button>
+                <button class="reset-btn" id="resetDbBtnCtrl">🔄 Сбросить БД</button>
+                <button class="edit-btn" id="manageUsersBtnCtrl">👥 Управление сотрудниками</button>
+                <button class="edit-btn" id="editParamsBtn">✏️ Управление параметрами</button>
+                <button class="edit-btn" id="editQuestionsControlBtn">📝 Управление вопросами (контроль)</button>
+            </div>`;
+        }
+        html += `<div id="paramsList"></div>
+            <div class="game-section" id="gameSectionControl"></div>
+            <div id="historyPanelCtrl" class="history-list"></div>`;
+        contentDiv.innerHTML = html;
+        const params = getParams();
+        let paramsHtml = '';
+        params.forEach(p => {
+            paramsHtml += `<div class="param-card" data-id="${p.id}"><div class="param-header">📏 ${p.name}</div><div class="param-details"><div class="detail-block"><div class="detail-title">Влияние на качество</div><div class="detail-text">${p.impactQual}</div></div><div class="detail-block"><div class="detail-title">Влияние на переработку</div><div class="detail-text">${p.impactProc}</div></div><div class="detail-block"><div class="detail-title">Периодичность</div><div class="detail-text">${p.period}</div></div><div class="detail-block"><div class="detail-title">Результат</div><div class="detail-text">${p.result}${p.gost ? `<div class="gost-badge">${p.gost}</div>` : ''}</div></div></div></div>`;
+        });
+        document.getElementById('paramsList').innerHTML = paramsHtml;
+        const qControl = getQuestionsByType('control');
+        let gameState = { current: 0, score: 0, answered: false, selected: null, finished: false };
+        let historyChartCtrl = null;
+        let sortableParams = null;
+
+        function renderGame() {
+            const container = document.getElementById('gameSectionControl');
+            if (!container) return;
+            if (gameState.finished) {
+                container.innerHTML = `<div style="text-align:center;"><h3>🎉 Итог</h3><div style="font-size:2rem;">${gameState.score}/${qControl.length}</div><button class="restart-btn" id="restartGameCtrl">🔄 Заново</button></div>`;
+                document.getElementById('restartGameCtrl')?.addEventListener('click', () => { gameState = { current:0, score:0, answered:false, selected:null, finished:false }; renderGame(); });
+                return;
+            }
+            const q = qControl[gameState.current];
+            const progress = ((gameState.current+1)/qControl.length)*100;
+            let optsHtml = '';
+            q.options.forEach((opt, idx) => {
+                let cls = 'game-option';
+                if (gameState.answered) { cls += ' disabled-opt'; if (idx === q.correct) cls += ' selected-correct'; else if (idx === gameState.selected && idx !== q.correct) cls += ' selected-incorrect'; }
+                optsHtml += `<div class="${cls}" data-opt="${idx}"><span>${String.fromCharCode(65+idx)}.</span> <span>${opt}</span></div>`;
+            });
+            let feedback = '';
+            if (gameState.answered) feedback = `<div class="feedback-game"><strong>${gameState.selected === q.correct ? '✅ Верно!' : '❌ Неверно.'}</strong><p>${q.explanation}</p><p>✔ Правильный ответ: ${q.options[q.correct]}</p></div>`;
+            const htmlGame = `<div class="game-header"><h2>🧠 Тренажёр по контролю</h2><div class="score-badge">${gameState.score}/${qControl.length}</div></div><div class="progress-game"><div class="progress-bar-game" style="width:${progress}%;"></div></div><div class="game-card"><div class="question-desc">${q.description}</div><div class="hint-text">💡 ${q.hint}</div><div class="game-options" id="ctrlOpts">${optsHtml}</div>${feedback}<button class="next-btn" id="nextCtrlBtn" ${!gameState.answered ? 'disabled' : ''}>➡️ Далее</button></div>`;
+            container.innerHTML = htmlGame;
+            document.querySelectorAll('#ctrlOpts .game-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (gameState.answered) return;
+                    const idx = parseInt(btn.dataset.opt);
+                    gameState.selected = idx;
+                    gameState.answered = true;
+                    if (idx === q.correct) gameState.score++;
+                    renderGame();
+                });
+            });
+            document.getElementById('nextCtrlBtn')?.addEventListener('click', () => {
+                if (gameState.current < qControl.length-1) { gameState.current++; gameState.answered=false; gameState.selected=null; renderGame(); }
+                else {
+                    gameState.finished = true;
+                    saveAttempt(currentUser.id, 'control', gameState.score, qControl.length, []);
+                    renderGame();
+                    renderHistoryCtrl();
+                }
+            });
+        }
+
+        function renderHistoryCtrl() {
+            const attempts = getUserAttempts(currentUser.id).filter(a=>a.type==='control');
+            let histHtml = '<div style="font-weight:600;">📜 Ваши попытки (контроль):</div>';
+            if (!attempts.length) {
+                histHtml += '<div>Нет попыток</div>';
+            } else {
+                attempts.forEach(a => {
+                    histHtml += `<div class="history-item">${new Date(a.created_at).toLocaleString()} — ${a.score}/${a.total} (${Math.round(a.score/a.total*100)}%)</div>`;
+                });
+            }
+            document.getElementById('historyPanelCtrl').innerHTML = histHtml;
+
+            const last5 = attempts.slice(0,5).reverse();
+            if (last5.length > 0) {
+                let canvas = document.getElementById('ctrlChartCanvas');
+                if (!canvas) {
+                    canvas = document.createElement('canvas');
+                    canvas.id = 'ctrlChartCanvas';
+                    canvas.width = 400;
+                    canvas.height = 200;
+                    document.getElementById('historyPanelCtrl').appendChild(canvas);
+                }
+                const labels = last5.map(a => new Date(a.created_at).toLocaleDateString());
+                const percents = last5.map(a => Math.round(a.score/a.total*100));
+                if (historyChartCtrl) historyChartCtrl.destroy();
+                const ctx = canvas.getContext('2d');
+                historyChartCtrl = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '% правильных ответов',
+                            data: percents,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Процент' } } },
+                        plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.raw}%` } } }
+                    }
+                });
+            } else {
+                const oldCanvas = document.getElementById('ctrlChartCanvas');
+                if (oldCanvas) oldCanvas.remove();
+                if (historyChartCtrl) { historyChartCtrl.destroy(); historyChartCtrl = null; }
+            }
+        }
+
+        function enableDragAndDropParams() {
+            const container = document.getElementById('paramsList');
+            if (!container) return;
+            if (sortableParams) sortableParams.destroy();
+            sortableParams = new Sortable(container, {
+                animation: 150,
+                handle: '.param-card',
+                onEnd: function() {
+                    const newOrder = [];
+                    document.querySelectorAll('#paramsList .param-card').forEach(card => {
+                        const id = parseInt(card.getAttribute('data-id'));
+                        if (id) newOrder.push(id);
+                    });
+                    if (newOrder.length) {
+                        store.set('paramsOrder', newOrder);
+                        toastr.success('Порядок параметров контроля сохранён');
+                    }
+                }
+            });
+        }
+
+        renderGame();
+        renderHistoryCtrl();
+        if (isExpert || isAdmin) {
+            enableDragAndDropParams();
+            document.getElementById('exportDbBtnCtrl')?.addEventListener('click', exportFullDatabase);
+            document.getElementById('importDbBtnCtrl')?.addEventListener('click', () => {
+                const input = document.createElement('input'); input.type = 'file'; input.accept = '.xlsx, .xls';
+                input.onchange = e => { if (e.target.files[0]) importFullDatabase(e.target.files[0]); };
+                input.click();
+            });
+            document.getElementById('templateDbBtnCtrl')?.addEventListener('click', downloadTemplate);
+            document.getElementById('resetDbBtnCtrl')?.addEventListener('click', resetDatabase);
+            document.getElementById('manageUsersBtnCtrl')?.addEventListener('click', openUserManager);
+            document.getElementById('editParamsBtn')?.addEventListener('click', () => openParamsEditor());
+            document.getElementById('editQuestionsControlBtn')?.addEventListener('click', () => openQuestionsEditor('control'));
+        }
+    }
+
+    // ---------- РЕДАКТОРЫ ДЛЯ ЭКСПЕРТА/АДМИНА С DRAG&DROP ДЛЯ ВОПРОСОВ ----------
+    function openDefectsEditor() {
+        let modal = document.createElement('div'); modal.className = 'modal'; modal.style.display = 'flex';
+        modal.innerHTML = `<div class="modal-content"><h3>Редактирование дефектов</h3><div id="defectsEditorList"></div><button id="addDefectBtn">+ Добавить дефект</button><button id="closeModal">Закрыть</button></div>`;
+        document.body.appendChild(modal);
+        function renderEditor() {
+            const dlist = getDefects();
+            let html = '';
+            dlist.forEach((d, idx) => {
+                html += `<div style="border:1px solid #ccc; margin:10px; padding:10px;">
+                    <input value="${d.title}" placeholder="Название" id="title_${idx}"><br>
+                    <textarea placeholder="Влияние" id="impact_${idx}">${d.impact}</textarea><br>
+                    <label>Годная (через ;)</label> <input id="good_${idx}" value="${d.good.join('; ')}"><br>
+                    <label>Ограниченная</label> <input id="limited_${idx}" value="${d.limited.join('; ')}"><br>
+                    <label>Утилизация</label> <input id="scrap_${idx}" value="${d.scrap.join('; ')}"><br>
+                    <label>Пример огранич.</label> <input id="lifeLim_${idx}" value="${d.lifeLimited}"><br>
+                    <label>Пример утил.</label> <input id="lifeScrap_${idx}" value="${d.lifeScrap}"><br>
+                    <button class="delDefectBtn" data-idx="${idx}">Удалить</button>
+                </div>`;
+            });
+            document.getElementById('defectsEditorList').innerHTML = html;
+            document.querySelectorAll('.delDefectBtn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(btn.dataset.idx);
+                    const newDefects = getDefects(); newDefects.splice(idx,1); saveDefects(newDefects); renderEditor();
+                });
+            });
+        }
+        renderEditor();
+        document.getElementById('addDefectBtn').onclick = () => {
+            const newDefects = getDefects();
+            newDefects.push({ id: Date.now(), title: "Новый дефект", impact: "", good: [], limited: [], scrap: [], lifeLimited: "", lifeScrap: "" });
+            saveDefects(newDefects); renderEditor();
+        };
+        const saveAllBtn = document.createElement('button'); saveAllBtn.textContent = 'Сохранить все изменения'; saveAllBtn.style.marginTop = '10px';
+        saveAllBtn.onclick = () => {
+            const newDefs = [];
+            const dlist = getDefects();
+            for (let i=0; i<dlist.length; i++) {
+                newDefs.push({
+                    id: dlist[i].id,
+                    title: document.getElementById(`title_${i}`)?.value || dlist[i].title,
+                    impact: document.getElementById(`impact_${i}`)?.value || dlist[i].impact,
+                    good: document.getElementById(`good_${i}`)?.value.split(';').map(s=>s.trim()),
+                    limited: document.getElementById(`limited_${i}`)?.value.split(';').map(s=>s.trim()),
+                    scrap: document.getElementById(`scrap_${i}`)?.value.split(';').map(s=>s.trim()),
+                    lifeLimited: document.getElementById(`lifeLim_${i}`)?.value || '',
+                    lifeScrap: document.getElementById(`lifeScrap_${i}`)?.value || ''
+                });
+            }
+            saveDefects(newDefs);
+            toastr.success("Дефекты сохранены");
+            renderEditor();
+            renderApp();
+        };
+        modal.querySelector('.modal-content').appendChild(saveAllBtn);
+        document.getElementById('closeModal').onclick = () => modal.remove();
+    }
+
+    function openParamsEditor() {
+        let modal = document.createElement('div'); modal.className = 'modal'; modal.style.display = 'flex';
+        modal.innerHTML = `<div class="modal-content"><h3>Параметры контроля</h3><div id="paramsEditorList"></div><button id="addParamBtn">+ Добавить</button><button id="closeParamModal">Закрыть</button></div>`;
+        document.body.appendChild(modal);
+        function render() {
+            let list = getParams();
+            let html = '';
+            list.forEach((p, idx) => {
+                html += `<div style="border:1px solid #ccc; margin:10px; padding:10px;">
+                    <input id="pname_${idx}" value="${p.name}" placeholder="Название"><br>
+                    <textarea id="pimpactQual_${idx}" placeholder="Влияние на качество">${p.impactQual}</textarea><br>
+                    <textarea id="pimpactProc_${idx}" placeholder="Влияние на переработку">${p.impactProc}</textarea><br>
+                    <input id="pperiod_${idx}" value="${p.period}" placeholder="Периодичность"><br>
+                    <input id="presult_${idx}" value="${p.result}" placeholder="Результат"><br>
+                    <input id="pgost_${idx}" value="${p.gost}" placeholder="ГОСТ"><br>
+                    <button class="delParamBtn" data-idx="${idx}">Удалить</button>
+                </div>`;
+            });
+            document.getElementById('paramsEditorList').innerHTML = html;
+            document.querySelectorAll('.delParamBtn').forEach(btn => {
+                btn.addEventListener('click', (e) => { let newList = getParams(); newList.splice(parseInt(btn.dataset.idx),1); saveParams(newList); render(); });
+            });
+        }
+        render();
+        document.getElementById('addParamBtn').onclick = () => { let newList = getParams(); newList.push({ id: Date.now(), name: "Новый параметр", impactQual:"", impactProc:"", period:"", result:"", gost:"" }); saveParams(newList); render(); };
+        const saveBtn = document.createElement('button'); saveBtn.textContent = 'Сохранить все'; saveBtn.onclick = () => {
+            let newList = [];
+            for (let i=0; i<getParams().length; i++) {
+                newList.push({
+                    id: getParams()[i].id,
+                    name: document.getElementById(`pname_${i}`)?.value || '',
+                    impactQual: document.getElementById(`pimpactQual_${i}`)?.value || '',
+                    impactProc: document.getElementById(`pimpactProc_${i}`)?.value || '',
+                    period: document.getElementById(`pperiod_${i}`)?.value || '',
+                    result: document.getElementById(`presult_${i}`)?.value || '',
+                    gost: document.getElementById(`pgost_${i}`)?.value || ''
+                });
+            }
+            saveParams(newList); toastr.success("Сохранено"); renderApp();
+        };
+        modal.querySelector('.modal-content').appendChild(saveBtn);
+        document.getElementById('closeParamModal').onclick = () => modal.remove();
+    }
+
+    function openQuestionsEditor(type) {
+        let modal = document.createElement('div'); modal.className = 'modal'; modal.style.display = 'flex';
+        modal.innerHTML = `<div class="modal-content"><h3>Вопросы (${type})</h3><div id="qEditorList"></div><button id="addQBtn">+ Добавить вопрос</button><button id="closeQModal">Закрыть</button></div>`;
+        document.body.appendChild(modal);
+        let sortableQuestions = null;
+
+        function render() {
+            let all = getQuestions().filter(q => q.type === type);
+            let html = '<div id="questionsSortableContainer">';
+            all.forEach((q, idx) => {
+                html += `<div class="question-item" data-id="${q.id}" style="border:1px solid #ccc; margin:10px; padding:10px; cursor:grab;">
+                    <input id="qdesc_${idx}" value="${q.description}" placeholder="Вопрос"><br>
+                    <input id="qhint_${idx}" value="${q.hint}" placeholder="Подсказка"><br>
+                    Варианты (через |): <input id="qopts_${idx}" value="${q.options.join('|')}"><br>
+                    Правильный индекс (0-3): <input id="qcorrect_${idx}" value="${q.correct}" type="number"><br>
+                    Пояснение: <textarea id="qexpl_${idx}">${q.explanation}</textarea><br>
+                    <button class="delQBtn" data-idx="${idx}">Удалить</button>
+                </div>`;
+            });
+            html += '</div>';
+            document.getElementById('qEditorList').innerHTML = html;
+            document.querySelectorAll('.delQBtn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(btn.dataset.idx);
+                    let allQuestions = getQuestions().filter(q => q.type === type);
+                    allQuestions.splice(idx, 1);
+                    let otherQuestions = getQuestions().filter(q => q.type !== type);
+                    saveQuestions([...otherQuestions, ...allQuestions]);
+                    render();
+                });
+            });
+            // Инициализация Sortable для вопросов
+            const container = document.getElementById('questionsSortableContainer');
+            if (container && sortableQuestions) sortableQuestions.destroy();
+            if (container) {
+                sortableQuestions = new Sortable(container, {
+                    animation: 150,
+                    handle: '.question-item',
+                    onEnd: function() {
+                        const newOrder = [];
+                        document.querySelectorAll('#questionsSortableContainer .question-item').forEach(el => {
+                            const id = parseInt(el.getAttribute('data-id'));
+                            if (id) newOrder.push(id);
+                        });
+                        if (newOrder.length) {
+                            store.set('questionsOrder', newOrder);
+                            // пересортировать глобальный массив вопросов
+                            const allQ = getQuestions();
+                            const ordered = [];
+                            newOrder.forEach(id => {
+                                const found = allQ.find(q => q.id === id);
+                                if (found) ordered.push(found);
+                            });
+                            const remaining = allQ.filter(q => !newOrder.includes(q.id));
+                            saveQuestions([...ordered, ...remaining]);
+                            toastr.success('Порядок вопросов сохранён');
+                        }
+                    }
+                });
+            }
+        }
+        render();
+        document.getElementById('addQBtn').onclick = () => {
+            let newQ = { id: Date.now(), type: type, description: "Новый вопрос", hint: "", options: ["","","",""], correct: 0, explanation: "" };
+            let all = getQuestions(); all.push(newQ); saveQuestions(all); render();
+        };
+        const saveBtn = document.createElement('button'); saveBtn.textContent = 'Сохранить изменения'; saveBtn.onclick = () => {
+            let allQuestions = getQuestions().filter(q => q.type !== type);
+            let currentList = [];
+            const elems = document.querySelectorAll('#questionsSortableContainer .question-item');
+            for (let i=0; i<elems.length; i++) {
+                currentList.push({
+                    id: parseInt(elems[i].getAttribute('data-id')),
+                    type: type,
+                    description: document.getElementById(`qdesc_${i}`)?.value || '',
+                    hint: document.getElementById(`qhint_${i}`)?.value || '',
+                    options: document.getElementById(`qopts_${i}`)?.value.split('|') || [],
+                    correct: parseInt(document.getElementById(`qcorrect_${i}`)?.value) || 0,
+                    explanation: document.getElementById(`qexpl_${i}`)?.value || ''
+                });
+            }
+            allQuestions = allQuestions.concat(currentList);
+            saveQuestions(allQuestions);
+            toastr.success("Вопросы сохранены");
+            renderApp();
+            modal.remove();
+        };
+        modal.querySelector('.modal-content').appendChild(saveBtn);
+        document.getElementById('closeQModal').onclick = () => modal.remove();
+    }
+
+    // ---------- СТАТИСТИКА РУКОВОДИТЕЛЯ ----------
+    function renderStatsTab() {
+        const isAdmin = currentUser.role === 'admin';
+        const contentDiv = document.getElementById('tabContent');
+        let html = `<div class="title-block"><h1>📈 Сводная аналитика</h1></div>`;
+        if (isAdmin) {
+            html += `<div class="admin-toolbar">
+                <button class="export-btn" id="exportDbBtnStats">💾 Экспорт БД (Excel)</button>
+                <button class="import-btn" id="importDbBtnStats">📂 Импорт БД (Excel)</button>
+                <button class="template-btn" id="templateDbBtnStats">📥 Скачать шаблон БД</button>
+                <button class="reset-btn" id="resetDbBtnStats">🔄 Сбросить БД</button>
+                <button class="edit-btn" id="manageUsersBtnStats">👥 Управление сотрудниками</button>
+            </div>`;
+        }
+        html += `<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:1rem;">
+                <input type="date" id="dateFrom"> - <input type="date" id="dateTo">
+                <select id="deptFilter"><option value="">Все подразделения</option><option value="БДМ">БДМ</option><option value="ПРС">ПРС</option><option value="СК">СК</option><option value="Конвертинг">Конвертинг</option></select>
+                <select id="userFilter"><option value="">Все сотрудники</option></select>
+                <button id="applyFilterBtn">Применить фильтр</button>
+                <button id="exportStatsBtn" class="export-btn">📎 Экспорт таблицы в Excel</button>
+            </div>
+            <canvas id="statsChart" width="400" height="200"></canvas>
+            <div id="statsTable"></div>`;
+        contentDiv.innerHTML = html;
+        function loadStats() {
+            const users = getUsers().filter(u => u.role === 'employee');
+            const attempts = getAllAttemptsWithUsers();
+            const dateFrom = document.getElementById('dateFrom')?.value ? new Date(document.getElementById('dateFrom').value) : null;
+            const dateTo = document.getElementById('dateTo')?.value ? new Date(document.getElementById('dateTo').value) : null;
+            const dept = document.getElementById('deptFilter')?.value;
+            const userName = document.getElementById('userFilter')?.value;
+            let filtered = attempts.filter(a => {
+                const user = users.find(u=>u.id === a.user_id);
+                if (!user) return false;
+                if (dept && user.department !== dept) return false;
+                if (userName && user.name !== userName) return false;
+                const adate = new Date(a.created_at);
+                if (dateFrom && adate < dateFrom) return false;
+                if (dateTo && adate > dateTo) return false;
+                return true;
+            });
+            let tableHtml = '<table border="1" cellpadding="5" style="width:100%; border-collapse:collapse;"><tr><th>Сотрудник</th><th>Тип</th><th>Результат</th><th>Дата</th></tr>';
+            filtered.forEach(a => { tableHtml += `<tr><td>${a.user_name}</td><td>${a.type}</td><td>${a.score}/${a.total} (${Math.round(a.score/a.total*100)}%)</td><td>${new Date(a.created_at).toLocaleString()}</td></tr>`; });
+            tableHtml += '</table>';
+            document.getElementById('statsTable').innerHTML = tableHtml;
+            const grouped = {};
+            filtered.forEach(a => { let day = new Date(a.created_at).toISOString().slice(0,10); if (!grouped[day]) grouped[day] = { total:0, count:0 }; grouped[day].total += (a.score/a.total)*100; grouped[day].count++; });
+            const labels = Object.keys(grouped).sort();
+            const data = labels.map(l => grouped[l].total / grouped[l].count);
+            if (resultsChart) resultsChart.destroy();
+            const ctx = document.getElementById('statsChart').getContext('2d');
+            resultsChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: 'Средний % правильных ответов', data, borderColor: '#1b4e77', tension: 0.1 }] } });
+        }
+        function updateUserFilter() {
+            const users = getUsers().filter(u => u.role === 'employee');
+            let opts = '<option value="">Все сотрудники</option>';
+            users.forEach(u => opts += `<option value="${u.name}">${u.name}</option>`);
+            document.getElementById('userFilter').innerHTML = opts;
+        }
+        updateUserFilter();
+        document.getElementById('applyFilterBtn')?.addEventListener('click', loadStats);
+        document.getElementById('exportStatsBtn')?.addEventListener('click', () => {
+            const attempts = getAllAttemptsWithUsers();
+            const wsData = [['Сотрудник','Тип','Результат','Дата']];
+            attempts.forEach(a => wsData.push([a.user_name, a.type, `${a.score}/${a.total}`, a.created_at]));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(wsData), 'Статистика');
+            XLSX.writeFile(wb, `статистика_${new Date().toISOString().slice(0,10)}.xlsx`);
+            toastr.success("Экспорт выполнен");
+        });
+        if (isAdmin) {
+            document.getElementById('exportDbBtnStats')?.addEventListener('click', exportFullDatabase);
+            document.getElementById('importDbBtnStats')?.addEventListener('click', () => {
+                const input = document.createElement('input'); input.type = 'file'; input.accept = '.xlsx, .xls';
+                input.onchange = e => { if (e.target.files[0]) importFullDatabase(e.target.files[0]); };
+                input.click();
+            });
+            document.getElementById('templateDbBtnStats')?.addEventListener('click', downloadTemplate);
+            document.getElementById('resetDbBtnStats')?.addEventListener('click', resetDatabase);
+            document.getElementById('manageUsersBtnStats')?.addEventListener('click', openUserManager);
+        }
+        loadStats();
+    }
+
+    function LoginForm() {
+        return `<div class="login-overlay"><div class="login-card"><h2>🔐 УК-Онлайн</h2><p>Вход в систему</p>
+            <input type="text" id="loginName" placeholder="Логин (ФИО / expert / admin)" autocomplete="off">
+            <input type="password" id="loginPass" placeholder="Пароль">
+            <button id="doLoginBtn">Войти</button>
+            <div style="margin-top: 1rem; font-size:0.8rem; color:#666;">👤 Сотрудник: любое ФИО / любой пароль (создаётся автоматически)<br>👨‍🔬 Эксперт: expert / 0000<br>👔 Руководитель: admin / 0000</div>
+        </div></div>`;
+    }
+
+    renderApp();
+</script>
+</body>
+</html>
